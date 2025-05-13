@@ -1,0 +1,69 @@
+// Function to store user preferences in localStorage
+function saveUserPreference(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
+// Function to retrieve user preferences from localStorage
+function getUserPreference(key) {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+}
+
+// Function to apply user preferences (e.g., theme)
+function applyUserPreferences() {
+    const theme = getUserPreference('theme');
+    if (theme) {
+        document.body.style.backgroundColor = theme === 'dark' ? '#333' : '#fff';
+        document.body.style.color = theme === 'dark' ? '#fff' : '#000';
+    }
+}
+
+// Function to toggle theme and save preference
+function toggleTheme() {
+    const currentTheme = getUserPreference('theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    saveUserPreference('theme', newTheme);
+    applyUserPreferences();
+    triggerAnimation(); // Trigger animation on theme change
+}
+
+// Function to implement an animation triggered by user actions
+function triggerAnimation() {
+    const animationElement = document.createElement('div');
+    animationElement.style.position = 'fixed';
+    animationElement.style.top = '50%';
+    animationElement.style.left = '50%';
+    animationElement.style.transform = 'translate(-50%, -50%)';
+    animationElement.style.width = '100px';
+    animationElement.style.height = '100px';
+    animationElement.style.backgroundColor = 'blue';
+    animationElement.style.borderRadius = '50%';
+    animationElement.style.opacity = '1';
+    animationElement.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+    document.body.appendChild(animationElement);
+
+    // Start animation
+    setTimeout(() => {
+        animationElement.style.opacity = '0';
+        animationElement.style.transform = 'translate(-50%, -50%) scale(2)';
+    }, 100);
+
+    // Remove element after animation
+    setTimeout(() => {
+        document.body.removeChild(animationElement);
+    }, 1100);
+}
+
+// Apply preferences on page load
+document.addEventListener('DOMContentLoaded', () => {
+    applyUserPreferences();
+
+    // Add a button to toggle theme
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Toggle Theme';
+    toggleButton.style.position = 'fixed';
+    toggleButton.style.bottom = '20px';
+    toggleButton.style.right = '20px';
+    toggleButton.addEventListener('click', toggleTheme);
+    document.body.appendChild(toggleButton);
+});
